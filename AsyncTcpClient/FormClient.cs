@@ -31,15 +31,17 @@ namespace AsyncTcpClient
         private void buttonConnect_Click(object sender, EventArgs e)
         {
             //使用IPv4
-            client = new TcpClient(AddressFamily.InterNetwork);
+            //client = new TcpClient(AddressFamily.InterNetwork);
             //实际使用时要将Dns.GetHostName()变为服务器名或IP地址
-            IPAddress[] serverIP = Dns.GetHostAddresses(Dns.GetHostName());
+            IPAddress[] serverIPs = Dns.GetHostAddresses(Dns.GetHostName());
             //创建一个委托，让其引用在异步操作完成时调用的回调方法
             AsyncCallback requestCallback = new AsyncCallback(RequestCallback);
             //将事件的状态设为非终止状态
             allDone.Reset();
             //开始一个对远程主机的异步请求
-            client.BeginConnect(serverIP[1], 51888, requestCallback, client);
+            IPAddress serverIp = serverIPs[0];
+            client = new TcpClient(serverIp.AddressFamily);
+            client.BeginConnect(serverIp, 51888, requestCallback, client);
             listBoxStatus.Invoke(setListBoxCallback, string.Format("本机 EndPoint：{0}", client.Client.LocalEndPoint));
             listBoxStatus.Invoke(setListBoxCallback, "开始与服务器建立连接");
             //阻塞当前进程，即场态界面不再相应任何用户操作，等待BeginConnect完成
