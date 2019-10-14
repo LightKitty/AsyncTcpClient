@@ -31,7 +31,7 @@ namespace AsyncTcpClient
         private void buttonConnect_Click(object sender, EventArgs e)
         {
             //使用IPv4
-            //client = new TcpClient(AddressFamily.InterNetwork);
+            //client = new TcpClient(AddressFamily.InterNetwork); //此方式需选择 ipv4 或 ipv6
             //实际使用时要将Dns.GetHostName()变为服务器名或IP地址
             IPAddress[] serverIPs = Dns.GetHostAddresses(Dns.GetHostName());
             //创建一个委托，让其引用在异步操作完成时调用的回调方法
@@ -40,7 +40,7 @@ namespace AsyncTcpClient
             allDone.Reset();
             //开始一个对远程主机的异步请求
             IPAddress serverIp = serverIPs[0];
-            client = new TcpClient(serverIp.AddressFamily);
+            client = new TcpClient(serverIp.AddressFamily); //此方式兼容 ipv6
             client.BeginConnect(serverIp, 51888, requestCallback, client);
             listBoxStatus.Invoke(setListBoxCallback, string.Format("本机 EndPoint：{0}", client.Client.LocalEndPoint));
             listBoxStatus.Invoke(setListBoxCallback, "开始与服务器建立连接");
